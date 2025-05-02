@@ -1,80 +1,58 @@
-const options = ["rock", "paper", "scissors"];
+// Select all choice buttons
+const choiceButtons = document.querySelectorAll(".choice");
 
-function getComputerChoice() {
-    const choice = options[Math.floor(Math.random() * options.length)];
-    console.log(`Computer chose: ${choice}`);  
-    return choice;  
-}
+// Add event listeners to each button
+choiceButtons.forEach(button => {
+    button.addEventListener("click", () => {
+        const choice = button.classList[1]; // Get the class name (rock, paper, or scissors)
+        playGame(choice);
+    });
+});
 
-function getHumanChoice() {
-    let validatedInput = false;
-    while (!validatedInput) { 
-        const choice = prompt("Rock, Paper, or Scissors?");
-        if (choice === null) { 
-            console.log("Game cancelled.");
-            return null;
-        }
-        const choiceInLowerCase = choice.toLowerCase().trim();
-        if (options.includes(choiceInLowerCase)) {
-            validatedInput = true;
-            console.log(`You chose: ${choiceInLowerCase}`);
-            return choiceInLowerCase;
-        } else {
-            console.log("Invalid choice. Please enter Rock, Paper, or Scissors.");
-        }
-    }
-}
 
-let humanScore = 0;
-let computerScore = 0;
+function playGame(playerChoice) {
+    const choices = ['rock', 'paper', 'scissors'];
+    const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+    let resultText = '';
 
-function playRound(humanChoice, computerChoice) {
-    if (!humanChoice) { 
-        console.log("Round cancelled.");
-        return;
-    }
-
-    if (humanChoice === computerChoice) {
-        console.log("It is a tie!");
-    } 
-    else if (
-        (humanChoice === "rock" && computerChoice === "scissors") ||
-        (humanChoice === "paper" && computerChoice === "rock") ||
-        (humanChoice === "scissors" && computerChoice === "paper")
+    if (playerChoice === computerChoice) {
+        resultText = "It's a tie!";
+    } else if (
+        (playerChoice === "rock" && computerChoice === "scissors") ||
+        (playerChoice === "paper" && computerChoice === "rock") ||
+        (playerChoice === "scissors" && computerChoice === "paper")
     ) {
-        console.log(`You win! ${humanChoice} beats ${computerChoice}`);
-        humanScore++;
+        resultText = "You win!";
     } else {
-        console.log(`You lose! ${computerChoice} beats ${humanChoice}`);
-        computerScore++;
-    }
-}
-
-function playGame() {
-    console.log("Welcome to Rock Paper Scissors!");
-    
-    for (let i = 0; i < 5; i++) {
-        console.log(`\nRound ${i + 1}`);
-        const humanSelection = getHumanChoice();
-        if (humanSelection === null) {
-            console.log("Game ended early.");
-            return;
-        }
-        const computerSelection = getComputerChoice();
-        playRound(humanSelection, computerSelection);
+        resultText = "Computer wins!";
     }
 
-    // Declare the final winner
-    console.log(`\nFinal Score: Player ${humanScore} - Computer ${computerScore}`);
-    if (humanScore > computerScore) {
-        console.log("🎉 You win the game!");
-    } else if (humanScore < computerScore) {
-        console.log("💻 Computer wins the game!");
-    } else {
-        console.log("🤝 It's a tie!");
-}
-}
+const resultDiv = document.getElementById("result");
 
+// Clear previous result
+resultDiv.textContent = "";
 
-// Start the game
-playGame();
+// Create elements for results
+const playerChoiceText = document.createElement("p");
+playerChoiceText.textContent = "You chose: ";
+const playerChoiceStrong = document.createElement("strong");
+playerChoiceStrong.textContent = playerChoice;
+playerChoiceText.appendChild(playerChoiceStrong);
+playerChoiceText.classList.add("result-text");
+
+const computerChoiceText = document.createElement("p");
+computerChoiceText.textContent = "Computer chose: ";
+const computerChoiceStrong = document.createElement("strong");
+computerChoiceStrong.textContent = computerChoice;
+computerChoiceText.appendChild(computerChoiceStrong);
+computerChoiceText.classList.add("result-text");
+
+const resultTextEl = document.createElement("p");
+resultTextEl.textContent = resultText;
+resultTextEl.classList.add("result-highlight");
+
+// Append elements to the result div
+resultDiv.appendChild(playerChoiceText);
+resultDiv.appendChild(computerChoiceText);
+resultDiv.appendChild(resultTextEl);
+}
